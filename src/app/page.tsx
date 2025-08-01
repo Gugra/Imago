@@ -1,17 +1,36 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Heart, MessageCircle, Share, User, Upload, Camera, Home, Users } from 'lucide-react';
+import { Heart, MessageCircle, Share, Upload, Camera, Home, Users } from 'lucide-react';
+import Image from 'next/image';
+
+interface Post {
+  id: number;
+  user: { name: string; avatar: string };
+  image: string;
+  caption: string;
+  likes: number;
+  comments: number;
+  isLiked: boolean;
+  tags: string[];
+  timestamp: string;
+}
+
+interface UploadData {
+  image: string | null;
+  caption: string;
+  tags: string;
+}
 
 const ImagoApp = () => {
   const [currentTab, setCurrentTab] = useState('para-voce');
-  const [user, setUser] = useState({ 
-    name: 'Gustavo Oliveira da Silva', 
+  const [user] = useState({ 
+    name: 'João Silva', 
     avatar: '/api/placeholder/40/40',
     followers: 234,
     following: 189
   });
-  const [posts, setPosts] = useState([
+  const [posts, setPosts] = useState<Post[]>([
     {
       id: 1,
       user: { name: 'Maria Santos', avatar: '/api/placeholder/40/40' },
@@ -47,7 +66,7 @@ const ImagoApp = () => {
     }
   ]);
   const [showUpload, setShowUpload] = useState(false);
-  const [uploadData, setUploadData] = useState({ image: null, caption: '', tags: '' });
+  const [uploadData, setUploadData] = useState<UploadData>({ image: null, caption: '', tags: '' });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleLike = (postId: number) => {
@@ -71,7 +90,7 @@ const ImagoApp = () => {
 
   const handleSubmitPost = () => {
     if (uploadData.image && uploadData.caption) {
-      const newPost = {
+      const newPost: Post = {
         id: posts.length + 1,
         user: { name: user.name, avatar: user.avatar },
         image: uploadData.image,
@@ -88,13 +107,15 @@ const ImagoApp = () => {
     }
   };
 
-  const PostCard = ({ post }: { post: any }) => (
+  const PostCard = ({ post }: { post: Post }) => (
     <div className="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
       {/* Header do Post */}
       <div className="p-4 flex items-center space-x-3">
-        <img 
+        <Image 
           src={post.user.avatar} 
           alt={post.user.name}
+          width={40}
+          height={40}
           className="w-10 h-10 rounded-full bg-gray-200"
         />
         <div className="flex-1">
@@ -104,9 +125,11 @@ const ImagoApp = () => {
       </div>
 
       {/* Imagem */}
-      <img 
+      <Image 
         src={post.image} 
         alt="Post"
+        width={400}
+        height={320}
         className="w-full h-80 object-cover bg-gray-200"
       />
 
@@ -172,9 +195,11 @@ const ImagoApp = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
               <div className="text-center">
-                <img 
+                <Image 
                   src={user.avatar} 
                   alt={user.name}
+                  width={80}
+                  height={80}
                   className="w-20 h-20 rounded-full mx-auto mb-4 bg-gray-200"
                 />
                 <h2 className="font-bold text-xl text-gray-900">{user.name}</h2>
@@ -258,9 +283,11 @@ const ImagoApp = () => {
                 className="hidden"
               />
               {uploadData.image ? (
-                <img 
+                <Image 
                   src={uploadData.image} 
                   alt="Preview"
+                  width={400}
+                  height={192}
                   className="w-full h-48 object-cover rounded-lg mb-2"
                 />
               ) : (
