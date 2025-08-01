@@ -25,7 +25,7 @@ interface UploadData {
 const ImagoApp = () => {
   const [currentTab, setCurrentTab] = useState('para-voce');
   const [user] = useState({ 
-    name: 'João Silva', 
+    name: 'Administrador', 
     avatar: '/api/placeholder/40/40',
     followers: 234,
     following: 189
